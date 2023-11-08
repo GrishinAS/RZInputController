@@ -23,17 +23,35 @@ public class MouseSimulator : DeviceSimulator
     /// </remarks>
     public void MouseMove(int x, int y, bool fromStartPoint  = true)
     {
-        if (DllWrapper == null)
-            throw new InvalidOperationException("Not initialized");
+        if (DllWrapper == null) throw new InvalidOperationException("Not initialized");
         if (!fromStartPoint && x == 0 || y == 0)
             throw new ArgumentException("x and/or y can not be 0 unless going from start point");
         DllWrapper.MouseMove(x, y, fromStartPoint);
     }
 
-    public void MouseClick(MouseInput button)
+    public void MouseInput(Button button, KeyState direction)
     {
-        if (DllWrapper == null)
-            throw new InvalidOperationException("Not initialized");
-        DllWrapper.MouseClick(button);
+        if (DllWrapper == null) throw new InvalidOperationException("Not initialized");
+        var mouseInput = MouseButtons.ButtonsDictionary[new MouseEvent(button, direction)];
+        DllWrapper.MouseClick(mouseInput);
+    }
+    
+    public void MouseClick(Button button, int releaseDelay = 75)
+    {
+        MouseInput(button, KeyState.Down);
+        Thread.Sleep(releaseDelay);
+        MouseInput(button, KeyState.Up);
+    }
+    
+    public void MouseScroll(KeyState direction, int lines = 1)
+    {
+        if (DllWrapper == null) throw new InvalidOperationException("Not initialized");
+        if (direction == KeyState.Down)
+            for (int i = 0; i < lines; i++)
+                DllWrapper.MouseClick(RazorController.MouseInput.ScrollDown);
+        else
+            for (int i = 0; i < lines; i++)
+                DllWrapper.MouseClick(RazorController.MouseInput.ScrollUp);
+        
     }
 }
