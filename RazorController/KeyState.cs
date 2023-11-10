@@ -2,6 +2,6 @@ namespace RazorController;
 
 public enum KeyState
 {
-    Up = 0,
-    Down = 1
+    Up = 1,
+    Down = 0
 }
