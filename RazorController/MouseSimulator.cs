@@ -24,7 +24,7 @@ public class MouseSimulator : DeviceSimulator
     public void MouseMove(int x, int y, bool fromStartPoint  = true)
     {
         if (DllWrapper == null) throw new InvalidOperationException("Not initialized");
-        if (!fromStartPoint && x == 0 || y == 0)
+        if (!fromStartPoint && (x == 0 || y == 0))
             throw new ArgumentException("x and/or y can not be 0 unless going from start point");
         DllWrapper.MouseMove(x, y, fromStartPoint);
     }
